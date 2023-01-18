@@ -1,4 +1,4 @@
-FROM node:17
+FROM node:18
 
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends gosu

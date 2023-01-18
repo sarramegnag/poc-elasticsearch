@@ -22,6 +22,11 @@ services:
         links:
             - php
 
+    node:
+        build: .docker/node
+        volumes:
+            - .:/app
+
     traefik:
         image: traefik:v2.6
         command:
