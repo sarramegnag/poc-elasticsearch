@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+    php:
+        build: .docker/php-fpm
+        volumes:
+            - .:/app
+            - ~/.composer:/.composer
+
+    nginx:
+        image: nginx:latest
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.nginx.rule=Host(`elastica.docker.localhost`)"
+            - "traefik.http.routers.nginx.entrypoints=web,websecure"
+            - "traefik.http.routers.nginx.middlewares=https-redirect"
+            - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+        volumes:
+            - .:/app
+            - .docker/nginx/conf/default.conf:/etc/nginx/conf.d/default.conf
+        links:
+            - php
+
+    traefik:
+        image: traefik:v2.6
+        command:
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+            - "--entrypoints.websecure.http.tls.domains[0].main=docker.localhost"
+            - "--entrypoints.websecure.http.tls.domains[0].sans=elastica.docker.localhost,*.localhost,localhost,traefik"
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8080:8080"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        links:
+            - nginx
+
+    dockerize:
+        image: jwilder/dockerize
