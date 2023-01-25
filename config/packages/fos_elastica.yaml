@@ -9,5 +9,20 @@ fos_elastica:
                 model: App\Entity\Book
                 provider: ~
                 finder: ~
+                elastica_to_model_transformer:
+                    query_builder_method: createSearchQueryBuilder
+                repository: App\ElasticRepository\BookRepository
             properties:
+                id:
+                    type: integer
                 name: ~
+                author:
+                    type: object
+                    properties:
+                        name:
+                            type: keyword
+                reviews:
+                    type: nested
+                    properties:
+                        rating:
+                            type: integer

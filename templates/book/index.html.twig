@@ -11,6 +11,8 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Rating</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,6 +20,8 @@
                 <tr>
                     <th scope="row">{{ book.id }}</th>
                     <td>{{ book.name }}</td>
+                    <td>{{ book.author.name }}</td>
+                    <td>{{ bookRatings[book.id]|default(null)|round(1) }}/5</td>
                 </tr>
                 {% endfor %}
             </tbody>

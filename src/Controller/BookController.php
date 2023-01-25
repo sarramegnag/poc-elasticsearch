@@ -2,31 +2,29 @@
 
 namespace App\Controller;
 
-use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
+use App\ElasticRepository\BookRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BookController extends AbstractController
 {
-    private const MAX_ITEMS_PER_PAGE = 10;
-
     #[Route('/', name: 'app_book')]
-    public function index(
-        #[Autowire(service: 'fos_elastica.finder.book')]
-        PaginatedFinderInterface $bookFinder,
-        Request $request
-    ): Response {
+    public function index(BookRepository $bookRepository, Request $request): Response
+    {
         $page = $request->query->get('page', 1);
 
-        $books = $bookFinder->findPaginated([])
-            ->setMaxPerPage(self::MAX_ITEMS_PER_PAGE)
-            ->setCurrentPage($page);
+        dump($books = $bookRepository->findAll($page));
+
+        $booksRatings = $books->getAdapter()->getAggregations()['books_agg']['buckets'];
 
         return $this->render('book/index.html.twig', [
             'books' => $books,
+            'bookRatings' => array_combine(
+                array_map(fn (array $aggregation) => $aggregation['key'], $booksRatings),
+                array_map(fn (array $aggregation) => $aggregation['reviews_agg']['rating_avg']['value'], $booksRatings),
+            )
         ]);
     }
 }
