@@ -1,15 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Books index{% endblock %}
+{% block title %}Books index - {{ parent() }}{% endblock %}
 
 {% block body %}
     <div class="container mt-5">
         <h1>Books index</h1>
 
-        {{ form_start(form) }}
-        {{ form_end(form) }}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-        <table class="table mt-3">
+        <div class="d-flex mt-3">
+            {{ form_start(form, { attr: { class: 'flex-grow-1' } }) }}
+            {{ form_end(form) }}
+
+            <div class="ms-3">
+                <a class="btn btn-primary" href="{{ path('app_book_create') }}" role="button">Add a book</a>
+            </div>
+        </div>
+
+        <table class="table">
             <thead>
                 <tr>
                     <th scope="col">#</th>
