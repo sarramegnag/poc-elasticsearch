@@ -1,0 +1,10 @@
+elastically:
+    connections:
+        default:
+            client:
+                host: '%env(ELASTICSEARCH_HOST)%'
+                port: '%env(ELASTICSEARCH_PORT)%'
+                transport: 'JoliCode\Elastically\Transport\HttpClientTransport'
+            mapping_directory: '%kernel.project_dir%/config/elasticsearch'
+            index_class_mapping:
+                books: App\Model\Book

@@ -63,7 +63,19 @@ services:
             # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
 
+    elasticsearch:
+        image: elasticsearch:${ELASTICSEARCH_VERSION:-8.6.0}
+        environment:
+            - discovery.type=single-node
+            - ES_JAVA_OPTS=-Xms1g -Xmx1g
+            - xpack.security.enabled=false
+        ports:
+            - "9200:9200"
+        volumes:
+            - es-data:/usr/share/elasticsearch/data
+
 volumes:
 ###> doctrine/doctrine-bundle ###
     db-data:
 ###< doctrine/doctrine-bundle ###
+    es-data:
