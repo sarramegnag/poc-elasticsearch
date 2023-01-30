@@ -11,6 +11,10 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    _instanceof:
+        App\Elasticsearch\Converter\DocumentConverterInterface:
+            tags: [ 'app.elasticsearch.document_converter' ]
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -27,3 +31,7 @@ services:
     JoliCode\Elastically\Messenger\IndexationRequestHandler: ~
 
     JoliCode\Elastically\Messenger\DocumentExchangerInterface: '@App\Elasticsearch\DocumentExchanger'
+
+    App\Elasticsearch\DocumentExchanger:
+        arguments:
+            $converters: !tagged_iterator app.elasticsearch.document_converter

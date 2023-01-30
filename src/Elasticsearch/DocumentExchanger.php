@@ -2,30 +2,26 @@
 
 namespace App\Elasticsearch;
 
-use App\Model\Book;
-use App\Repository\BookRepository;
+use App\Elasticsearch\Converter\DocumentConverterInterface;
 use Elastica\Document;
 use JoliCode\Elastically\Messenger\DocumentExchangerInterface;
 
 readonly class DocumentExchanger implements DocumentExchangerInterface
 {
     public function __construct(
-        private BookRepository $bookRepository
+        /** @var DocumentConverterInterface[] */
+        private iterable $converters
     ) {
     }
 
     public function fetchDocument(string $className, string $id): ?Document
     {
-        if ($className !== Book::class) {
-            return null;
+        foreach($this->converters as $converter) {
+            if ($converter->supports($className)) {
+                return $converter->fetchDocument($id);
+            }
         }
 
-        $post = $this->bookRepository->find($id);
-
-        if (!$post) {
-            return null;
-        }
-
-        return new Document($id, $post->toModel());
+        return null;
     }
 }
