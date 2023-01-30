@@ -4,7 +4,13 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h1>Add a book</h1>
+        <h1>{% block page_title %}Add a book{% endblock %}</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
             {{ form_row(form.name) }}

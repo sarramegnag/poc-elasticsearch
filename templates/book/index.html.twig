@@ -27,14 +27,18 @@
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Author</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for book in books %}
                 <tr>
                     <th scope="row">{{ loop.index }}</th>
-                    <td>{{ book.name }}</td>
-                    <td>{{ book.authorName }}</td>
+                    <td>{{ book.model.name }}</td>
+                    <td>{{ book.model.authorName }}</td>
+                    <td>
+                        <a class="link-primary" href="{{ path('app_book_update', { id: book.id }) }}">Update</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
