@@ -43,7 +43,9 @@ class Book
     public function toModel(): \App\Model\Book
     {
         return new \App\Model\Book(
+            $this->id,
             $this->name,
+            $this->author->getId(),
             $this->author->getName()
         );
     }

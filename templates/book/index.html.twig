@@ -12,14 +12,16 @@
             </div>
         {% endfor %}
 
-        <div class="d-flex mt-3">
-            {{ form_start(form, { attr: { class: 'flex-grow-1' } }) }}
-            {{ form_end(form) }}
+        {{ form_start(form, { attr: { class: 'd-flex my-3' } }) }}
+            {{ form_row(form.q, { row_attr: { class: 'flex-grow-1' } }) }}
 
-            <div class="ms-3">
+            <div class="ms-1">
+                <button class="btn btn-secondary" type="submit">Search</button>
+            </div>
+            <div class="ms-2">
                 <a class="btn btn-primary" href="{{ path('app_book_create') }}" role="button">Add a book</a>
             </div>
-        </div>
+        {{ form_end(form) }}
 
         <table class="table">
             <thead>
@@ -34,8 +36,10 @@
                 {% for book in books %}
                 <tr>
                     <th scope="row">{{ loop.index }}</th>
-                    <td>{{ book.model.name }}</td>
-                    <td>{{ book.model.authorName }}</td>
+                    <td>{{ book.name }}</td>
+                    <td>
+                        <a class="link-primary" href="{{ path('app_person_update', { id: book.authorId }) }}">{{ book.authorName }}</a>
+                    </td>
                     <td>
                         <a class="link-primary" href="{{ path('app_book_update', { id: book.id }) }}">Update</a>
                     </td>

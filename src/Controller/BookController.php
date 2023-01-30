@@ -50,11 +50,11 @@ class BookController extends AbstractController
             ->setSize(20)
         ;
 
-        /** @var Result[] $books */
-        $books = $client->getIndex('books')->search($query)->getResults();
-
         return $this->render('book/index.html.twig', [
-            'books' => $books,
+            'books' => array_map(
+                fn (Result $result): Book => $result->getModel(),
+                $client->getIndex('books')->search($query)->getResults()
+            ),
             'form' => $form,
         ]);
     }
@@ -92,7 +92,6 @@ class BookController extends AbstractController
             'book/%s.html.twig',
             $isUpdate ? 'update' : 'create'
         ), [
-            'book' => $book,
             'form' => $form,
         ]);
     }

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% set title = 'Update an author' %}
+
+{% block title %}{{ title }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>{{ title }}</h1>
+
+        {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+        {{ form_row(form.name) }}
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a class="link-secondary" href="{{ path('app_book') }}">Return to index</a>
+            <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
