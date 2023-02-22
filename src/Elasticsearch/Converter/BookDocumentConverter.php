@@ -15,7 +15,7 @@ readonly class BookDocumentConverter implements DocumentConverterInterface
 
     public function supports(string $className): bool
     {
-        return $className !== Book::class;
+        return $className === Book::class;
     }
 
     public function fetchDocument(string $id): ?Document

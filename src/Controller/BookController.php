@@ -7,8 +7,6 @@ use App\Form\SearchType;
 use App\Model\Book;
 use App\Model\Search;
 use App\Repository\BookRepository;
-use Elastica\Query;
-use JoliCode\Elastically\Client;
 use JoliCode\Elastically\Messenger\IndexationRequest;
 use JoliCode\Elastically\Result;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class BookController extends AbstractController
 {
@@ -26,8 +25,10 @@ class BookController extends AbstractController
     }
 
     #[Route('/', name: 'app_book')]
-    public function index(Client $client, Request $request): Response
-    {
+    public function index(
+        \App\Elasticsearch\Repository\BookRepository $bookRepository,
+        Request $request
+    ): Response {
         $form = $this->createForm(SearchType::class, $search = new Search());
 
         $form->handleRequest($request);
@@ -36,24 +37,10 @@ class BookController extends AbstractController
             return $this->redirectToRoute($request->attributes->get('_route'));
         }
 
-        if ($search->getQuery()) {
-            $searchQuery = (new Query\MultiMatch())
-                ->setQuery($search->getQuery())
-                ->setFields(['name^3', 'authorName'])
-            ;
-        } else {
-            $searchQuery = new Query\MatchAll();
-        }
-
-        $query = (new Query())
-            ->setQuery($searchQuery)
-            ->setSize(20)
-        ;
-
         return $this->render('book/index.html.twig', [
             'books' => array_map(
                 fn (Result $result): Book => $result->getModel(),
-                $client->getIndex('books')->search($query)->getResults()
+                $bookRepository->findAll($search->getQuery())
             ),
             'form' => $form,
         ]);

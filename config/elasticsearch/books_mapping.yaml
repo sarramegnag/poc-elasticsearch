@@ -7,7 +7,7 @@ mappings:
     properties:
         id: &entity_id
             type: unsigned_long
-        name: &simple_text
-            type: text
+        name: &simple_keyword
+            type: keyword
         authorId: *entity_id
-        authorName: *simple_text
+        authorName: *simple_keyword
